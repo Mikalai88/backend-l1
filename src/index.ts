@@ -9,7 +9,7 @@ const adresses = [{id: "1", value: 'Nezalejnasti 12'}, {id: "2", value: 'Selikag
 app.get('/products', (req: Request, res: Response) => {
     if (req.query.title) {
         let searchString = req.query.title.toString();
-        res.send(products.find(p => p.title.indexOf(searchString) > -1))
+        res.send(products.filter(p => p.title.includes(searchString) === true))
     } else {
         res.send(products)
     }
