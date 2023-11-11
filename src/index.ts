@@ -1,54 +1,173 @@
 import express, {Request, Response} from 'express'
 import bodyParser from 'body-parser'
 
-const app = express()
+export const app = express()
 const port = process.env.PORT || 3000
 
-const products = [{id: "1", title: 'tomato'}, {id: "2", title: "orange"}]
-const adresses = [{id: "1", value: 'Nezalejnasti 12'}, {id: "2", value: 'Selikaga 11'}]
+export enum CodeResponsesEnum {
+    Incorrect_values_400 = 400,
+    Not_found_404 = 404,
+    Not_content_204 = 204
+}
+
+export enum Resolutions {
+    P144 = "P144",
+    P240 = "P240",
+    P360 = "P360",
+    P480 = "P480",
+    P720 = "P720",
+    P1080 = "P1080",
+    P1440 = "P1440",
+    P2160 = "P2160"
+}
+
+export type VideoType = {
+    id: number
+    title: string
+    author: string
+    canBeDownloaded?: true
+    minAgeRestriction?: number
+    createdAt?: string
+    publicationDate?: string
+    availableResolutions?: Resolutions
+}
+
+let videos: VideoType[] = []
 
 const parserMiddleware = bodyParser({})
 app.use(parserMiddleware)
+app.use('/videos')
 
-app.get('/products', (req: Request, res: Response) => {
-    if (req.query.title) {
-        let searchString = req.query.title.toString();
-        res.send(products.filter(p => p.title.includes(searchString) === true))
-    } else {
-        res.send(products)
-    }
+app.get('/videos', (req: Request, res: Response) => {
+    // if (req.query.title) {
+    //     let searchString = req.query.title.toString();
+    //     res.send(products.filter(p => p.title.includes(searchString)))
+    // } else {
+        res.status(200).send(videos)
+    // }
 })
-app.post('/products', (req: Request, res: Response) => {
-    const newProduct = {
-        id: (new Date()).toString(),
-        title: req.body.title
+app.post('/videos', (req: Request, res: Response) => {
+    let title = req.body.title
+    if (!title || !title.trim() || title.length > 40 || typeof (title
+    ) !== "string") {
+        res.status(400).send({
+            "errorsMessages": [{
+                    "message": "Incorrect title",
+                    "field": "title"
+                }],
+            resultCode: 1
+        })
+        return
     }
-    products.push(newProduct)
-    res.status(201).send(newProduct)
-})
-app.get('/products/:id', (req: Request, res: Response) => {
-    let product = products.find(p => p.id === req.params.id)
 
-    if (product) {
-        res.send(product)
+    const newVideo = {
+        id: +(new Date()),
+        title: req.body.title,
+        author: req.body.author
+    }
+    videos.push(newVideo)
+    res.status(201).send(newVideo)
+})
+app.put('/videos/:videoId', (req: Request, res: Response) => {
+    let title = req.body.title
+    if (!title || !title.trim() || title.length > 40 || typeof (title
+    ) !== "string") {
+        res.status(400).send({
+            "errorsMessages": [{
+                "message": "Incorrect title",
+                "field": "title"
+            }],
+            resultCode: 1
+        })
+        return
+    }
+
+    const id = +req.params.videoId
+    const video = videos.find(v => v.id === id)
+    if (video) {
+        video.title = title
+        res.status(204).send(video)
     } else {
         res.send(404)
     }
 })
-app.put('/products/:id', (req: Request, res: Response) => {
-    let product = products.find(p => p.id === req.params.id)
+app.get('/videos/:id', (req: Request, res: Response) => {
+    let video = videos.find(v => v.id === +req.params.id)
 
-    if (product) {
-        product.title = req.body.title
-        res.status(200).send(product)
+    if (video) {
+        res.status(200).send(video)
     } else {
         res.send(404)
     }
 })
-app.delete('/products/:id', (req: Request, res: Response) => {
-    for (let i = 0; i < products.length; i++) {
-        if (products[i].id === req.params.id) {
-            products.splice(i, 1)
+app.put('/videos/:id', (req: Request, res: Response) => {
+    let title = req.body.title
+    if (!title || !title.trim() || title.length > 40 || typeof (title
+    ) !== "string") {
+        res.status(400).send({
+            "errorsMessages": [{
+                "message": "Incorrect title",
+                "field": "title"
+            }],
+            resultCode: 1
+        })
+        return
+    }
+
+    let author = req.body.author
+    if (!author || !author.trim() || author.length > 20 || typeof (author
+    ) !== "string") {
+        res.status(400).send({
+            "errorsMessages": [{
+                "message": "Incorrect author",
+                "field": "author"
+            }],
+            resultCode: 1
+        })
+        return
+    }
+
+    let availableResolutions = req.body.availableResolutions
+    if (!availableResolutions) {
+        res.status(400).send({
+            "errorsMessages": [{
+                "message": "Incorrect availableResolutions",
+                "field": "availableResolutions"
+            }],
+            resultCode: 1
+        })
+        return
+    }
+
+    let minAgeRestriction = req.body.minAgeRestriction
+    if (minAgeRestriction === null || typeof(minAgeRestriction) !== "number" || (minAgeRestriction < 1 && minAgeRestriction > 18)) {
+        res.status(400).send({
+            "errorsMessages": [{
+                "message": "Incorrect availableResolutions",
+                "field": "availableResolutions"
+            }],
+            resultCode: 1
+        })
+        return
+    }
+
+    let video = videos.find(v => v.id === +req.params.id)
+    if (video) {
+        video.title = req.body.title
+        video.author = req.body.author
+        video.availableResolutions = Resolutions.P144
+        video.canBeDownloaded = true
+        video.minAgeRestriction = 18
+        video.publicationDate = "2023-11-11T18:52:12.809Z"
+        res.status(204)
+    } else {
+        res.send(404)
+    }
+})
+app.delete('/videos/:id', (req: Request, res: Response) => {
+    for (let i = 0; i < videos.length; i++) {
+        if (videos[i].id === +req.params.id) {
+            videos.splice(i, 1)
             res.send(204)
             return;
         }
@@ -56,17 +175,10 @@ app.delete('/products/:id', (req: Request, res: Response) => {
     }
 
 })
-app.get('/adresses', (req: Request, res: Response) => {
-    res.send(adresses)
-})
-app.get('/adresses/:id', (req: Request, res: Response) => {
-    let adress = adresses.find(a => a.id === req.params.id)
 
-    if (adress) {
-        res.send(adress)
-    } else {
-        res.send(404)
-    }
+app.delete('/testing/all-data', (req: Request, res: Response) => {
+    videos = []
+    res.send(CodeResponsesEnum.Not_content_204)
 })
 
 app.listen(port, () => {
