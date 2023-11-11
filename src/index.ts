@@ -3,9 +3,14 @@ import express, {Request, Response} from 'express'
 const app = express()
 const port = process.env.PORT || 3000
 
-app.get('/', (req: Request, res: Response) => {
-    let helloIncubator = 'Hello Incubator!!! Hello World @@@';
-    res.send(helloIncubator)
+const products = [{title: 'tomato'}, {title: "orange"}]
+const adresses = [{value: 'Nezalejnasti 12'}, {value: 'Selikaga 11'}]
+
+app.get('/products', (req: Request, res: Response) => {
+    res.send(products)
+})
+app.get('/adresses', (req: Request, res: Response) => {
+    res.send(adresses)
 })
 
 app.listen(port, () => {
