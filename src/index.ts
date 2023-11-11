@@ -9,13 +9,18 @@ const adresses = [{value: 'Nezalejnasti 12'}, {value: 'Selikaga 11'}]
 app.get('/products', (req: Request, res: Response) => {
     res.send(products)
 })
-
 app.get('/products/:productTitle', (req: Request, res: Response) => {
     req.params.productTitle
     let product = products.find(p => p.title === req.params.productTitle)
-    res.send(product)
-})
 
+    if (product) {
+        res.send(product)
+    } else {
+        res.send(404)
+    }
+
+
+})
 app.get('/adresses', (req: Request, res: Response) => {
     res.send(adresses)
 })
