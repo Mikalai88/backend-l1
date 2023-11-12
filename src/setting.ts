@@ -24,8 +24,8 @@ export type VideoType = {
     id: number
     title: string
     author: string
-    canBeDownloaded?: true
-    minAgeRestriction?: number
+    canBeDownloaded?: boolean
+    minAgeRestriction?: number | null
     createdAt?: string
     publicationDate?: string
     availableResolutions?: Array<Resolutions>
@@ -60,7 +60,12 @@ app.post('/videos', (req: Request, res: Response) => {
     const newVideo = {
         id: +(new Date()),
         title: req.body.title,
-        author: req.body.author
+        author: req.body.author,
+        availableResolutions: [Resolutions.P144],
+        canBeDownloaded: false,
+        createdAt: new Date().toISOString(),
+        minAgeRestriction: null,
+        publicationDate: new Date().toISOString()
     }
     videos.push(newVideo)
     res.status(201).send(newVideo)
