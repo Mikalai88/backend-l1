@@ -126,7 +126,7 @@ app.put('/videos/:videoId', (req: Request, res: Response) => {
         errorsMessages.push({"message":"minAgeRestriction is required","field":"minAgeRestriction"})
     }
     if(typeof(publicationDate) === "string") {
-        function isIsoDate(publicationDate) {
+        function isIsoDate(publicationDate: string) {
             if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(publicationDate)) return false;
             const d = new Date(publicationDate);
             return d instanceof Date && !isNaN(d.getTime()) && d.toISOString()===publicationDate; // valid date
