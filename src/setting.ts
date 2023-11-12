@@ -58,7 +58,7 @@ app.post('/videos', (req: Request, res: Response) => {
     ) !== "string") {
         errorsMessages.push({"message":"author is required","field":"author"})
     }
-    if (availableResolutions === null) {
+    if (availableResolutions === null || availableResolutions !== Resolutions) {
         errorsMessages.push({"message":"availableResolutions is required","field":"availableResolutions"})
     }
 
