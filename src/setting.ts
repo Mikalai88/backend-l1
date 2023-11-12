@@ -52,8 +52,7 @@ app.post('/videos', (req: Request, res: Response) => {
             "errorsMessages": [{
                 "message": "title is required",
                 "field": "title"
-            }],
-            resultCode: 1
+            }]
         })
         return
     }
