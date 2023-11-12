@@ -47,27 +47,20 @@ app.get('/videos', (req: Request, res: Response) => {
 app.post('/videos', (req: Request, res: Response) => {
     let title = req.body.title
     let author = req.body.author
+
+    let errorsMessages = []
     if (!title || !title.trim() || title.length > 40 || typeof (title
     ) !== "string") {
-        res.status(CodeResponsesEnum.Incorrect_values_400).send({
-            "errorsMessages": [{
-                "message": "title is required",
-                "field": "title"
-            }]
-        })
-        return
+        errorsMessages.push({"message":"title is required","field":"title"})
     }
     if (!author || !author.trim() || author.length > 20 || typeof (author
     ) !== "string") {
-        res.status(CodeResponsesEnum.Incorrect_values_400).send({
-            "errorsMessages": [{
-                "message": "author is required",
-                "field": "author"
-            }]
-        })
-        return
+        errorsMessages.push({"message":"author is required","field":"author"})
     }
 
+    if (errorsMessages.length !== 0){
+        res.status(400).send({"errorsMessages": errorsMessages})
+    }
     let currentDate = new Date();
     let pubDate = new Date(currentDate.getTime() + 86400000);
 
@@ -86,31 +79,26 @@ app.post('/videos', (req: Request, res: Response) => {
 })
 app.put('/videos/:videoId', (req: Request, res: Response) => {
     let title = req.body.title
+    let author = req.body.author
+    let errorsMessages = []
     if (!title || !title.trim() || title.length > 40 || typeof (title
     ) !== "string") {
-        res.status(400).send({
-            "errorsMessages": [{
-                "message": "Incorrect title",
-                "field": "title"
-            }]
-        })
-        return
+        errorsMessages.push({"message":"title is required","field":"title"})
+    }
+    if (!author || !author.trim() || author.length > 20 || typeof (author
+    ) !== "string") {
+        errorsMessages.push({"message":"author is required","field":"author"})
     }
 
-    if (typeof (req.body.canBeDownloaded) !== "boolean") {
-        res.status(400).send({
-            "errorsMessages": [{
-                "message": "Incorrect canBeDownloaded",
-                "field": "canBeDownloaded"
-            }]
-        })
-        return
+    if (errorsMessages.length !== 0){
+        res.status(400).send({"errorsMessages": errorsMessages})
     }
 
     const id = +req.params.videoId
     const video = videos.find(v => v.id === id)
     if (video) {
         video.title = title
+        video.author = author
         res.status(204).send(video)
     } else {
         res.sendStatus(404)
