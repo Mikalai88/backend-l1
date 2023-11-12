@@ -48,9 +48,9 @@ app.post('/videos', (req: Request, res: Response) => {
     let title = req.body.title
     if (!title || !title.trim() || title.length > 40 || typeof (title
     ) !== "string") {
-        res.status(400).send({
+        res.status(CodeResponsesEnum.Incorrect_values_400).send({
             "errorsMessages": [{
-                "message": "Incorrect title",
+                "message": "title is required",
                 "field": "title"
             }],
             resultCode: 1
@@ -86,7 +86,7 @@ app.put('/videos/:videoId', (req: Request, res: Response) => {
         video.title = title
         res.status(204).send(video)
     } else {
-        res.send(404)
+        res.sendStatus(404)
     }
 })
 app.get('/videos/:id', (req: Request, res: Response) => {
@@ -95,7 +95,7 @@ app.get('/videos/:id', (req: Request, res: Response) => {
     if (video) {
         res.status(200).send(video)
     } else {
-        res.send(404)
+        res.sendStatus(404)
     }
 })
 app.put('/videos/:id', (req: Request, res: Response) => {
@@ -156,24 +156,23 @@ app.put('/videos/:id', (req: Request, res: Response) => {
         video.canBeDownloaded = true
         video.minAgeRestriction = 18
         video.publicationDate = "2023-11-11T18:52:12.809Z"
-        res.status(204)
+        res.sendStatus(204)
     } else {
-        res.send(404)
+        res.sendStatus(404)
     }
 })
 app.delete('/videos/:id', (req: Request, res: Response) => {
     for (let i = 0; i < videos.length; i++) {
         if (videos[i].id === +req.params.id) {
             videos.splice(i, 1)
-            res.send(204)
+            res.sendStatus(204)
             return;
         }
-        res.send(404)
     }
-
+    res.sendStatus(404)
 })
 
 app.delete('/testing/all-data', (req: Request, res: Response) => {
     videos = []
-    res.status(CodeResponsesEnum.Not_content_204)
+    res.sendStatus(CodeResponsesEnum.Not_content_204)
 })

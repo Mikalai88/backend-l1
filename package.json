@@ -8,7 +8,7 @@
     "dev": "nodemon --inspect dist/index.js",
     "build": "tsc",
     "start": "node dist/index.js",
-    "jest": "jest -i"
+    "test": "jest -i --config jest.config.js"
   },
   "dependencies": {
     "@types/jest": "^29.5.8",
