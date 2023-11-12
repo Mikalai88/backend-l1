@@ -28,7 +28,7 @@ export type VideoType = {
     minAgeRestriction?: number
     createdAt?: string
     publicationDate?: string
-    availableResolutions?: Resolutions
+    availableResolutions?: Array<Resolutions>
 }
 
 let videos: VideoType[] = []
@@ -149,7 +149,7 @@ app.put('/videos/:id', (req: Request, res: Response) => {
     if (video) {
         video.title = req.body.title
         video.author = req.body.author
-        video.availableResolutions = Resolutions.P144
+        video.availableResolutions = [Resolutions.P144]
         video.canBeDownloaded = true
         video.minAgeRestriction = 18
         video.publicationDate = "2023-11-11T18:52:12.809Z"
