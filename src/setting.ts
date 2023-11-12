@@ -80,6 +80,11 @@ app.post('/videos', (req: Request, res: Response) => {
 app.put('/videos/:videoId', (req: Request, res: Response) => {
     let title = req.body.title
     let author = req.body.author
+    let availableResolutions = req.body.availableResolutions
+    let canBeDownloaded = req.body.canBeDownloaded
+    let minAgeRestriction = req.body.minAgeRestriction
+    let publicationDate = req.body.publicationDate
+
     let errorsMessages = []
     if (!title || !title.trim() || title.length > 40 || typeof (title
     ) !== "string") {
@@ -99,6 +104,10 @@ app.put('/videos/:videoId', (req: Request, res: Response) => {
     if (video) {
         video.title = title
         video.author = author
+        video.availableResolutions = availableResolutions
+        video.canBeDownloaded = canBeDownloaded
+        video.minAgeRestriction = minAgeRestriction
+        video.publicationDate = publicationDate
         res.status(204).send(video)
     } else {
         res.sendStatus(404)
