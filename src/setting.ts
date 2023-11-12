@@ -131,7 +131,7 @@ app.put('/videos/:videoId', (req: Request, res: Response) => {
             const d = new Date(publicationDate);
             return d instanceof Date && !isNaN(d.getTime()) && d.toISOString()===publicationDate; // valid date
         }
-        if (isIsoDate(publicationDate) === false) {
+        if (!isIsoDate(publicationDate)) {
             errorsMessages.push({"message":"publicationDate is not valid","field":"publicationDate"})
         }
     }
