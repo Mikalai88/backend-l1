@@ -138,7 +138,7 @@ app.put('/videos/:id', (req: Request, res: Response) => {
         res.status(400).send({
             "errorsMessages": [{
                 "message": "Incorrect availableResolutions",
-                "field": "availableResolutions"
+                "field": "minAgeRestriction"
             }],
             resultCode: 1
         })
