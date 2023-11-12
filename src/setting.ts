@@ -125,6 +125,19 @@ app.put('/videos/:videoId', (req: Request, res: Response) => {
     if (minAgeRestriction !== null && (minAgeRestriction < 1 || minAgeRestriction > 18)) {
         errorsMessages.push({"message":"minAgeRestriction is required","field":"minAgeRestriction"})
     }
+    if(typeof(publicationDate) === "string") {
+        function isIsoDate(publicationDate) {
+            if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(publicationDate)) return false;
+            const d = new Date(publicationDate);
+            return d instanceof Date && !isNaN(d.getTime()) && d.toISOString()===publicationDate; // valid date
+        }
+        if (isIsoDate(publicationDate) === false) {
+            errorsMessages.push({"message":"publicationDate is not valid","field":"publicationDate"})
+        }
+    }
+    if (typeof(publicationDate) !== 'string') {
+        errorsMessages.push({"message":"publicationDate is not valid","field":"publicationDate"})
+    }
 
     if (errorsMessages.length !== 0){
         res.status(400).send({"errorsMessages": errorsMessages})
