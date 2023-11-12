@@ -47,6 +47,7 @@ app.get('/videos', (req: Request, res: Response) => {
 app.post('/videos', (req: Request, res: Response) => {
     let title = req.body.title
     let author = req.body.author
+    let availableResolutions = req.body.availableResolutions
 
     let errorsMessages = []
     if (!title || !title.trim() || title.length > 40 || typeof (title
@@ -56,6 +57,9 @@ app.post('/videos', (req: Request, res: Response) => {
     if (!author || !author.trim() || author.length > 20 || typeof (author
     ) !== "string") {
         errorsMessages.push({"message":"author is required","field":"author"})
+    }
+    if (availableResolutions === null) {
+        errorsMessages.push({"message":"availableResolutions is required","field":"availableResolutions"})
     }
 
     if (errorsMessages.length !== 0){
