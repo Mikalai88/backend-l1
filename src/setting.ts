@@ -46,6 +46,7 @@ app.get('/videos', (req: Request, res: Response) => {
 })
 app.post('/videos', (req: Request, res: Response) => {
     let title = req.body.title
+    let author = req.body.author
     if (!title || !title.trim() || title.length > 40 || typeof (title
     ) !== "string") {
         res.status(CodeResponsesEnum.Incorrect_values_400).send({
@@ -56,8 +57,6 @@ app.post('/videos', (req: Request, res: Response) => {
         })
         return
     }
-
-    let author = req.body.author
     if (!author || !author.trim() || author.length > 20 || typeof (author
     ) !== "string") {
         res.status(CodeResponsesEnum.Incorrect_values_400).send({
@@ -69,6 +68,9 @@ app.post('/videos', (req: Request, res: Response) => {
         return
     }
 
+    let currentDate = new Date();
+    let pubDate = new Date(currentDate.getTime() + 86400000);
+
     const newVideo = {
         id: +(new Date()),
         title: req.body.title,
@@ -77,7 +79,7 @@ app.post('/videos', (req: Request, res: Response) => {
         canBeDownloaded: false,
         createdAt: new Date().toISOString(),
         minAgeRestriction: null,
-        publicationDate: new Date().toISOString()
+        publicationDate: pubDate.toISOString()
     }
     videos.push(newVideo)
     res.status(201).send(newVideo)
@@ -90,6 +92,16 @@ app.put('/videos/:videoId', (req: Request, res: Response) => {
             "errorsMessages": [{
                 "message": "Incorrect title",
                 "field": "title"
+            }]
+        })
+        return
+    }
+
+    if (typeof (req.body.canBeDownloaded) !== "boolean") {
+        res.status(400).send({
+            "errorsMessages": [{
+                "message": "Incorrect canBeDownloaded",
+                "field": "canBeDownloaded"
             }]
         })
         return
