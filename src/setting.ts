@@ -57,6 +57,18 @@ app.post('/videos', (req: Request, res: Response) => {
         return
     }
 
+    let author = req.body.author
+    if (!author || !author.trim() || author.length > 20 || typeof (author
+    ) !== "string") {
+        res.status(CodeResponsesEnum.Incorrect_values_400).send({
+            "errorsMessages": [{
+                "message": "author is required",
+                "field": "author"
+            }]
+        })
+        return
+    }
+
     const newVideo = {
         id: +(new Date()),
         title: req.body.title,
@@ -120,8 +132,7 @@ app.put('/videos/:id', (req: Request, res: Response) => {
             "errorsMessages": [{
                 "message": "Incorrect author",
                 "field": "author"
-            }],
-            resultCode: 1
+            }]
         })
         return
     }
