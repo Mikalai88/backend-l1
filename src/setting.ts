@@ -107,6 +107,24 @@ app.put('/videos/:videoId', (req: Request, res: Response) => {
     ) !== "string") {
         errorsMessages.push({"message":"author is required","field":"author"})
     }
+    if (Array.isArray(availableResolutions)) {
+        let somethingIsNotString = false;
+        availableResolutions.forEach(function(item){
+            if(typeof item !== 'string'){
+                somethingIsNotString = true;
+            }
+        })
+        let notValidResolutions = availableResolutions.filter(r => !(Object.values(Resolutions).includes(r)))
+        if (notValidResolutions.length !== 0) {
+            errorsMessages.push({"message":"availableResolutions is required","field":"availableResolutions"})
+        }
+    }
+    if (typeof (canBeDownloaded) !== "boolean") {
+        errorsMessages.push({"message":"canBeDownloaded is required","field":"canBeDownloaded"})
+    }
+    if (minAgeRestriction !== null && (minAgeRestriction < 1 || minAgeRestriction > 18)) {
+        errorsMessages.push({"message":"minAgeRestriction is required","field":"minAgeRestriction"})
+    }
 
     if (errorsMessages.length !== 0){
         res.status(400).send({"errorsMessages": errorsMessages})
