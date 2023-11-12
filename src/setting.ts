@@ -58,9 +58,7 @@ app.post('/videos', (req: Request, res: Response) => {
     ) !== "string") {
         errorsMessages.push({"message":"author is required","field":"author"})
     }
-    if (!availableResolutions || !availableResolutions.includes("P144") || !availableResolutions.includes("P240") ||
-        !availableResolutions.includes("P360") || !availableResolutions.includes("P480") || !availableResolutions.includes("720") ||
-        !availableResolutions.includes("P1440") || !availableResolutions.includes("P2160")) {
+    if (!availableResolutions || !(Object.values(Resolutions).includes(availableResolutions))) {
         errorsMessages.push({"message":"availableResolutions is required","field":"availableResolutions"})
     }
 
